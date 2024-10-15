@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <cs50.h>
 #include <stdlib.h>  //system("clear");
+#include <string.h> //strcmp
 
 typedef struct {
     string name;
@@ -10,6 +11,7 @@ typedef struct {
 } Patient;
 
 void addPatient(Patient patients[], int numPatients);
+void searchPatient(Patient patients[], int numPatients);
 
 int main(void){
     Patient patients[300];
@@ -49,16 +51,21 @@ void addPatient(Patient patients[], int numPatients){
 }
 
 
-void searchPatient(Patients patients[], int numPatients){
+void searchPatient(Patient patients[], int numPatients){
     //Prompt for patient name
     //Search for patient name
     //If we find a match,
     //    print out patient info
     string name = get_string("Enter the patients name to search: ");
     for (int i = 0; i < numPatients; i = i + 1){
-        if(strcmp(patient.name, name) == 0){
-            //do something
+        if(strcmp(patients[i].name, name) == 0){
+            printf("Name: %s\n", patients[i].name);
+            printf("Age: %i\n", patients[i].age);
+            printf("Gender: %s\n", patients[i].gender);
+            printf("Last visit: %s\n", patients[i].lastVisit);
+            return;
         }
     }
+    printf("Not found in system");
 
 }
