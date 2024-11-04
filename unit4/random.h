@@ -1,3 +1,7 @@
+#ifndef RANDOM_H  // Include guard to prevent multiple definitions
+#define RANDOM_H
+
+
 #include <stdlib.h>
 #include <time.h>
 
@@ -18,3 +22,6 @@ float get_random_float_between(float min, float max){
     float percent_range_traveled = ((double)rand()) / RAND_MAX;
     return min + range * percent_range_traveled;
 }
+
+
+#endif // RANDOM_H

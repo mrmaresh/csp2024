@@ -15,6 +15,7 @@ Player players[MAX_PLAYERS];
 int set_up_game(void);
 void play_game(int num_players);
 bool check_win(int num_players, int roll_score, int current_player);
+void update_screen(int num_players, int current_player, int turn_total, int dice_roll);
 
 int main(void) {
     int num_players = set_up_game();
@@ -41,13 +42,13 @@ void play_game(int num_players){
     RANDOM_SEED; // This is so we can pick a random number
     int current_player = 0; //index of the 1st player
     string choice;
-    int dice_roll;
+    int dice_roll = 0;
     int roll_score = 0;
     bool game_over = false;
 
     while(!game_over){
-        
-        printf("Current player: %s\n", players[current_player].name);
+        update_screen(num_players, current_player, roll_score, dice_roll);
+
 
         do{
             choice = get_string("Type \"roll\" to roll or type \"hold\" to hold.\n");
@@ -55,11 +56,11 @@ void play_game(int num_players){
 
         if (strcmp("roll", choice) == 0){
             dice_roll  = get_random_integer_between(1, 6);
-            printf("You rolled %i\n", dice_roll);
+            update_screen(num_players, current_player, roll_score, dice_roll);
 
             if (dice_roll != 1){
                 roll_score = roll_score + dice_roll;
-                printf("Turn total = %i\n", roll_score);
+                update_screen(num_players, current_player, roll_score, dice_roll);
                 game_over = check_win(num_players, roll_score, current_player);
             }
             else {
@@ -93,4 +94,27 @@ bool check_win(int num_players, int roll_score, int current_player){
     }
     return false;
 
+}
+
+
+void update_screen(int num_players, int current_player, int turn_total, int dice_roll){
+    system("clear");
+    printf("_______________________________________________________________________\n\n");
+    printf("%-10s", "NAME:");
+    for (int i = 0; i < num_players; i = i + 1){
+        printf("%-12s", players[i].name);
+    }
+    printf("\n");
+    printf("%-10s", "SCORE:");
+    for (int i = 0; i < num_players; i = i +1){
+        printf("%-12i", players[i].score);
+    }
+    printf("\n");
+    printf("____________________________________________________________________\n\n");
+
+    printf("Current Player: %s\n", players[current_player].name);
+    printf("Turn Total: %i\n", turn_total);
+    if (dice_roll != 0) {
+        printf("You rolled: %i\n", dice_roll);
+    }
 }

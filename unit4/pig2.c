@@ -2,6 +2,7 @@
 #include <cs50.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 typedef struct {
     string name;
@@ -13,7 +14,7 @@ Player players[MAX_PLAYERS];
 
 int set_up_game(int num_players);
 void play_game(int num_players);
-void create_score_board(int num_players);
+void update_score_board(int num_players, int current_player, int turn_total, int dice_roll);
 bool check_for_winner(int num_players);
 
 int main(void) {
@@ -43,35 +44,42 @@ int set_up_game(int num_players){
 void play_game(int num_players){
     RANDOM_SEED; // allows us to use the random functions
     int current_player = 0; // index of the first player
-    int dice_roll;
-    int current_round_score = 0;
+    int dice_roll = 0;
+    int turn_total = 0;
     char decision;
     bool game_play = true;
 
     while(game_play){
-        create_score_board(num_players);
-        printf("Current Player: %s", players[current_player].name);
+        update_score_board(num_players, current_player, turn_total, dice_roll);
 
         do {
-            decision = get_char("Press \"r\" for roll or \"p\" for pass: ");
-        } while (decision != 'r' && decision != 'p');
+            decision = get_char("Press \"r\" for roll or \"h\" for hold: ");
+        } while (decision != 'r' && decision != 'h');
 
         if (decision == 'r'){
             dice_roll = get_random_integer_between(1,6);
-            printf("You rolled a %i\n", dice_roll);
+            update_score_board(num_players, current_player, turn_total, dice_roll);
             if (dice_roll != 1) {
-                current_round_score = current_round_score + dice_roll;
-                printf("Current round score = %i\n", current_round_score);
+                turn_total = turn_total + dice_roll;
+                update_score_board(num_players, current_player, turn_total, dice_roll);
             }
             else {
                 game_play = check_for_winner(num_players);
                 current_player = (current_player + 1) % num_players;
+                update_score_board(num_players, current_player, turn_total, dice_roll);
+                printf("You rolled a 1.  Next player!\n");
+                sleep(1);
+                dice_roll = 0;
+                turn_total = 0;
+
             }
         }
         else {
-            players[i].score = players[i].score + current_round_score;
+            players[current_player].score = players[current_player].score + turn_total;
             game_play = check_for_winner(num_players);
             current_player = (current_player + 1) % num_players;
+            dice_roll = 0;
+            turn_total = 0;
         }
 
     }
@@ -79,7 +87,7 @@ void play_game(int num_players){
 }
 
 
-void create_score_board(int num_players){
+void update_score_board(int num_players, int current_player, int turn_total, int dice_roll){
     system("clear");
     printf("_____________________________________________________________________\n\n");
     printf("%-10s", "NAME: ");
@@ -93,6 +101,12 @@ void create_score_board(int num_players){
     }
     printf("\n");
     printf("_____________________________________________________________________\n\n");
+
+    printf("Current Player: %s\n", players[current_player].name);
+    printf("Turn Total: %i\n", turn_total);
+    if (dice_roll != 0){
+        printf("You rolled: %i\n", dice_roll);
+    }
 }
 
 
@@ -100,7 +114,7 @@ void create_score_board(int num_players){
 bool check_for_winner(int num_players) {
     for (int i = 0; i < num_players; i = i + 1){
         if (players[i].score >= 100){
-            printf("%s is the winner!!!\n", players[i].name);
+            printf("\n\n\n%s is the winner!!!\n\n\n", players[i].name);
             return false;
         }
     }
