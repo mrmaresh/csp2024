@@ -77,8 +77,10 @@ def run_quiz(vocab, words, definitions, incorrect_words):
     system('clear')
     random.shuffle(definitions)
     num_definitions = len(definitions)
-    count = 0
+    count = 1
+    num_options = 10
     for definition in definitions:
+        print(f"{count} of {num_definitions}")
         print(f"Definition: {definition} \n")
 
         # Select the correct word for the definition
@@ -89,7 +91,7 @@ def run_quiz(vocab, words, definitions, incorrect_words):
 
         # create a list of options
         options = [correct_word]
-        while len(options) < 10:
+        while len(options) < num_options:
             random_word = random.choice(words)
             if random_word not in options:
                 options.append(random_word)
@@ -104,11 +106,11 @@ def run_quiz(vocab, words, definitions, incorrect_words):
         # Get user input and check the answer
         print()
         while True:
-            answer = input("Your choice (1-10): ")
+            answer = input("Your choice (1-" + str(num_options) + "): ")
             if not answer.isdigit():
                 continue
             answer = int(answer)
-            if answer >= 1 and answer <=10:
+            if answer >= 1 and answer <= num_options:
                 break
         print()
 
@@ -120,7 +122,6 @@ def run_quiz(vocab, words, definitions, incorrect_words):
 
         print()
         count = count + 1
-        print(f"{num_definitions - count} more to go")
         get_string("Press enter to continue ...")
         system('clear')
 
