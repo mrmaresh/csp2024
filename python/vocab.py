@@ -132,7 +132,7 @@ def run_quiz(vocab, words, definitions, incorrect_words):
 def end_quiz(incorrect_words, total):
 
     if len(incorrect_words) != 0:
-        print(f"You got {100*len(incorrect_words)/total:.1f}% correct!")
+        print(f"You got {100 - 100*len(incorrect_words)/total:.1f}% correct!")
         print("You got the following words wrong:\n")
         for word in incorrect_words:
             print(word)
